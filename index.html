@@ -47,6 +47,7 @@ h1{
   background:white;
   border-radius:20px;
   padding:20px;
+  box-sizing:border-box;
 }
 
 .label{
@@ -55,13 +56,15 @@ h1{
   color:#666;
 }
 
-input, select{
+input, select, textarea{
   width:100%;
   padding:14px;
   margin-top:8px;
   border-radius:12px;
   border:1px solid #ddd;
   font-size:16px;
+
+  box-sizing:border-box; /* 🔥 關鍵！讓寬度一致 */
 }
 
 .mainBtn{
