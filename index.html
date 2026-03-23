@@ -10,13 +10,17 @@ body{
   margin:0;
   font-family:-apple-system, BlinkMacSystemFont, sans-serif;
   background:#f2f2f7;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh; /* 🔥 讓畫面撐滿 */
 }
 
-.container{
-  max-width:500px;
-  margin:auto;
-  padding:20px;
-}
+.container{ 
+  width:100%; 
+  max-width:500px; 
+  padding:20px; }
 
 h1{
   font-size:22px;
@@ -92,7 +96,8 @@ input, select, textarea{
 
 
 </head>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
 <body>
   
 <div class="container">
