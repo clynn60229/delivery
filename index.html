@@ -1,0 +1,185 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>進出貨管理</title>
+
+<style>
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:#f5f5f5;
+  text-align:center;
+}
+
+.container{
+  padding:40px 20px;
+}
+
+h1{
+  font-size:40px;
+}
+
+select, input, textarea{
+  width:80%;
+  padding:15px;
+  margin:15px 0;
+  font-size:20px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+button{
+  width:80%;
+  padding:20px;
+  margin-top:20px;
+  font-size:24px;
+  border:none;
+  border-radius:15px;
+  background:#007AFF;
+  color:white;
+}
+
+button:active{
+  opacity:0.7;
+}
+
+.tabBtn{
+  width:40%;
+  margin:10px;
+  background:#ddd;
+  color:#333;
+}
+
+.active{
+  background:#007AFF !important;
+  color:white !important;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📦 進出貨系統</h1>
+
+<!-- 切換按鈕 -->
+<div>
+  <button class="tabBtn active" onclick="switchTab('in')">收貨簽收</button>
+  <button class="tabBtn" onclick="switchTab('out')">出貨寄件</button>
+</div>
+
+<!-- ================= 收貨 ================= -->
+<div id="inBox">
+
+<input type="text" id="inSender" placeholder="寄件人（外部）">
+
+<select id="inReceiver">
+  <option value="">選擇收件人</option>
+  <option>王小明</option>
+  <option>王小美</option>
+  <option>李小華</option>
+</select>
+
+<input type="text" id="inNote" placeholder="備註（文件 / 樣品）">
+
+<button onclick="submitIn()">完成簽收</button>
+
+</div>
+
+<!-- ================= 出貨 ================= -->
+<div id="outBox" style="display:none">
+
+<input type="text" id="outSender" placeholder="寄件人（公司）">
+
+<input type="text" id="outReceiver" placeholder="收件人（外部）">
+
+<textarea id="outContent" placeholder="出貨內容（例如：商品A x2）"></textarea>
+
+<input type="text" id="outNote" placeholder="備註">
+
+<button onclick="submitOut()">建立出貨單</button>
+
+</div>
+
+</div>
+
+<script>
+
+// 🔄 切換頁面
+function switchTab(type){
+  document.getElementById("inBox").style.display = type === "in" ? "block" : "none"
+  document.getElementById("outBox").style.display = type === "out" ? "block" : "none"
+
+  let btns = document.getElementsByClassName("tabBtn")
+  for(let i=0;i<btns.length;i++){
+    btns[i].classList.remove("active")
+  }
+
+  event.target.classList.add("active")
+}
+
+// 📥 收貨送出
+function submitIn(){
+
+  const data = {
+    type: "in",
+    sender: document.getElementById("inSender").value,
+    receiver: document.getElementById("inReceiver").value,
+    note: document.getElementById("inNote").value
+  }
+
+  if(!data.receiver){
+    alert("請選擇收件人")
+    return
+  }
+
+  sendData(data)
+}
+
+// 📤 出貨送出
+function submitOut(){
+
+  const data = {
+    type: "out",
+    sender: document.getElementById("outSender").value,
+    receiver: document.getElementById("outReceiver").value,
+    content: document.getElementById("outContent").value,
+    note: document.getElementById("outNote").value
+  }
+
+  if(!data.receiver){
+    alert("請填寫收件人")
+    return
+  }
+
+  sendData(data)
+}
+
+// 🚀 傳送到 Apps Script
+function sendData(data){
+
+  fetch("👉這裡換成你的Apps Script Web App URL", {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(res => res.text())
+  .then(res => {
+    alert("✅ 完成")
+    location.reload()
+  })
+  .catch(err => {
+    alert("❌ 失敗")
+    console.log(err)
+  })
+
+}
+
+</script>
+
+</body>
+</html>
+```
