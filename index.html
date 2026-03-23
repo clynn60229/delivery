@@ -135,6 +135,8 @@ input, select, textarea{
   <option>嘉里大榮</option>
   <option>永勝</option>
   <option>順豐</option>
+  <option>Fedex</option>
+  <option>DHL</option>
 </select>
 
 <div class="label">上傳照片（含關稅）</div>
@@ -147,7 +149,7 @@ input, select, textarea{
 <!-- ================= 寄貨 ================= -->
 <div id="outBox" style="display:none">
 
-<div class="label">收件人</div>
+<div class="label">寄件人</div>
 <select id="sender">
   <option value="">請選擇</option>
   <option>鄭芸</option>
@@ -159,8 +161,18 @@ input, select, textarea{
   <option>鄭苓</option>
 </select>
 
-<div class="label">收件人</div>
-<input type="text" id="outReceiver">
+<div class="label">收件品牌</div>
+<select id="outBrand" onchange="checkBrand()">
+  <option value="">請選擇</option>
+  <option>TR Dior</option>
+  <option>TW Dior</option>
+  <option>GL</option>
+  <option>CPB</option>
+  <option>LAP</option>
+  <option>TF</option>
+  <option>BB</option>
+  <option value="other">Other</option>
+</select>
 
 <div class="label">件數</div>
 <input type="number" id="outQty">
