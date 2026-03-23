@@ -5,105 +5,147 @@
 <title>進出貨管理</title>
 
 <style>
+
 body{
   margin:0;
-  font-family:sans-serif;
-  background:#f5f5f5;
-  text-align:center;
+  font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+  background:#f2f2f7;
 }
 
 .container{
-  padding:40px 20px;
+  max-width:500px;
+  margin:auto;
+  padding:20px;
 }
 
 h1{
-  font-size:40px;
+  font-size:22px;
+  margin:20px 0;
+  font-weight:600;
 }
 
-select, input, textarea{
-  width:80%;
-  padding:15px;
-  margin:15px 0;
-  font-size:20px;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-
-button{
-  width:80%;
+/* 分段卡片 */
+.card{
+  background:white;
+  border-radius:20px;
   padding:20px;
-  margin-top:20px;
-  font-size:24px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* 上方切換 */
+.tabGroup{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tabBtn{
+  flex:1;
+  padding:14px;
+  font-size:16px;
+  border-radius:12px;
   border:none;
-  border-radius:15px;
+  background:#e5e5ea;
+}
+
+.tabBtn.active{
   background:#007AFF;
   color:white;
 }
 
-button:active{
-  opacity:0.7;
+/* 輸入欄 */
+input, select, textarea{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  font-size:16px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  box-sizing:border-box;
 }
 
-.tabBtn{
-  width:40%;
-  margin:10px;
-  background:#ddd;
-  color:#333;
+/* 按鈕 */
+.mainBtn{
+  width:100%;
+  padding:16px;
+  margin-top:20px;
+  font-size:18px;
+  border:none;
+  border-radius:14px;
+  background:#007AFF;
+  color:white;
 }
 
-.active{
-  background:#007AFF !important;
-  color:white !important;
+.mainBtn:active{
+  transform:scale(0.98);
 }
+
+/* 標題小字 */
+.label{
+  margin-top:15px;
+  font-size:14px;
+  color:#666;
+}
+
 </style>
+
+
 
 </head>
 
 <body>
-
+  
 <div class="container">
 
 <h1>📦 進出貨系統</h1>
 
-<!-- 切換按鈕 -->
-<div>
+<div class="tabGroup">
   <button class="tabBtn active" onclick="switchTab('in')">收貨簽收</button>
   <button class="tabBtn" onclick="switchTab('out')">出貨寄件</button>
 </div>
 
-<!-- ================= 收貨 ================= -->
+<div class="card">
+
+<!-- 收貨 -->
 <div id="inBox">
 
-<input type="text" id="inSender" placeholder="寄件人（外部）">
+<div class="label">寄件人（外部）</div>
+<input type="text" id="inSender">
 
+<div class="label">收件人</div>
 <select id="inReceiver">
-  <option value="">選擇收件人</option>
+  <option value="">請選擇</option>
   <option>王小明</option>
   <option>王小美</option>
-  <option>李小華</option>
 </select>
 
-<input type="text" id="inNote" placeholder="備註（文件 / 樣品）">
+<div class="label">備註</div>
+<input type="text" id="inNote">
 
-<button onclick="submitIn()">完成簽收</button>
+<button class="mainBtn" onclick="submitIn()">完成簽收</button>
 
 </div>
 
-<!-- ================= 出貨 ================= -->
+<!-- 出貨 -->
 <div id="outBox" style="display:none">
 
-<input type="text" id="outSender" placeholder="寄件人（公司）">
+<div class="label">寄件人</div>
+<input type="text" id="outSender">
 
-<input type="text" id="outReceiver" placeholder="收件人（外部）">
+<div class="label">收件人（外部）</div>
+<input type="text" id="outReceiver">
 
-<textarea id="outContent" placeholder="出貨內容（例如：商品A x2）"></textarea>
+<div class="label">出貨內容</div>
+<textarea id="outContent"></textarea>
 
-<input type="text" id="outNote" placeholder="備註">
+<div class="label">備註</div>
+<input type="text" id="outNote">
 
-<button onclick="submitOut()">建立出貨單</button>
+<button class="mainBtn" onclick="submitOut()">建立出貨單</button>
 
 </div>
 
+</div>
 </div>
 
 <script>
