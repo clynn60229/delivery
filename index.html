@@ -271,24 +271,56 @@ function submitOut(){
   sendData(data, document.getElementById("receipt"))
 }
 
-// 傳送
+// 🔥 傳送（完整版）
 async function sendData(data, fileInput){
 
   try{
 
-  const res = await fetch(GAS_URL,{
-    method:"POST",
-    body:JSON.stringify(data)
-  })
+    // =====================
+    // 📸 optional附件
+    // =====================
+    if(fileInput && fileInput.files.length > 0){
 
-  const text = await res.text()
-  console.log("回應：", text)
+      const file = fileInput.files[0]
 
-  alert("✅ 已送出")
+      // 檔案限制
+      if(file.size > 5 * 1024 * 1024){
+        alert("檔案不能超過5MB")
+        return
+      }
+
+      const base64 = await toBase64(file)
+      data.file = base64
+      data.fileType = file.type
+
+    }else{
+      data.file = ""
+    }
+
+    console.log("送出資料:", data)
+
+    // =====================
+    // 🚀 傳送
+    // =====================
+    const res = await fetch(GAS_URL,{
+      method:"POST",
+      body:JSON.stringify(data)
+    })
+
+    const text = await res.text()
+    console.log("GAS回應:", text)
+
+    // 🔥 判斷是否真的成功
+    if(text.includes("success")){
+      alert("✅ 已送出")
+      resetForm()
+    }else{
+      alert("⚠️ 已送出但後端異常")
+    }
 
   }catch(err){
-    console.error("錯誤：", err)
-    alert("❌ 送出失敗")
+    console.error("錯誤:", err)
+    alert("❌ 送出失敗（看Console）")
   }  
 }
 
