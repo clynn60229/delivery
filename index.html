@@ -289,43 +289,31 @@ async function sendData(data, fileInput){
         return
       }
 
-      const base64 = await toBase64(file)
-      data.file = base64
-      data.fileType = file.type
+       try{
+        const base64 = await toBase64(file)
+        data.file = base64
+        data.fileType = file.type
+      }catch(e){
+        alert("檔案讀取失敗")
+        return
+      }
 
-    }else{
-      data.file = ""
     }
 
     console.log("送出資料:", data)
 
-    // =====================
-    // 🚀 傳送
-    // =====================
-   const res = await fetch(GAS_URL,{
+    await fetch(GAS_URL,{
       method:"POST",
-      mode:"no-cors",   // 🔥 關鍵
+      mode:"no-cors",
       body:JSON.stringify(data)
     })
 
     alert("✅ 已送出")
-    resetForm()
-
-    const text = await res.text()
-    console.log("GAS回應:", text)
-
-    // 🔥 判斷是否真的成功
-    if(text.includes("success")){
-      alert("✅ 已送出")
-      resetForm()
-    }else{
-      alert("⚠️ 已送出但後端異常")
-    }
 
   }catch(err){
     console.error("錯誤:", err)
-    alert("❌ 送出失敗（看Console）")
-  }  
+    alert("❌ 送出失敗")
+  }
 }
 
 // 清空
