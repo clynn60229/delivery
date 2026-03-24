@@ -138,6 +138,10 @@ input, select{
   <option>DHL</option>
 </select>
 
+<div class="label">上傳照片（含關稅）</div>
+<input type="file" id="photo" onchange="showFileName(this, 'photoName')">
+<div id="photoName" style="font-size:13px;color:#666;margin-top:5px;"></div>
+
 <button class="mainBtn" onclick="submitIn()">完成收貨</button>
 
 </div>
@@ -183,6 +187,12 @@ input, select{
   <option>永勝</option>
   <option>順豐</option>
 </select>
+
+  ```html id="fileout"
+<div class="label">上傳收貨單</div>
+<input type="file" id="receipt" onchange="showFileName(this, 'receiptName')">
+<div id="receiptName" style="font-size:13px;color:#666;margin-top:5px;"></div>
+```
 
 <button class="mainBtn" onclick="submitOut()">完成寄貨</button>
 
@@ -236,7 +246,7 @@ function submitIn(){
     return
   }
 
-  sendData(data)
+  sendData(data, document.getElementById("photo"))
 }
 
 // 寄貨
@@ -260,7 +270,7 @@ function submitOut(){
     return
   }
 
-  sendData(data)
+  sendData(data, document.getElementById("receipt"))
 }
 
 // 傳送
@@ -279,7 +289,13 @@ function sendData(data){
     alert("❌ 失敗")
   })
 }
-
+  
+function showFileName(input, targetId){
+  const file = input.files[0] if(file){ 
+    document.getElementById(targetId).innerText = "已選：" + file.name 
+  } 
+}
+  
 </script>
 
 </body>
