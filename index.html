@@ -283,19 +283,17 @@ async function sendData(data, fileInput){
     data.fileType = file.type
   }
   
+
   fetch(GAS_URL,{
     method:"POST",
+    mode:"no-cors",   // 🔥 關鍵
     body:JSON.stringify(data)
   })
-  .then(res=>res.text())
-  .then(res=>{
-    console.log(res)
-    alert("✅ 完成")
-    location.reload()
+  .then(()=>{
+    alert("✅ 已送出")
   })
-  .catch(err=>{
-    console.error(err)
-    alert("❌ 送出失敗")
+  .catch(()=>{
+    alert("❌ 失敗")
   })
   
 }
