@@ -32,8 +32,8 @@ h1{
 
 .tabBtn{
   flex:1;
-  padding:18px;        /* 🔥 按鈕變高 */
-  font-size:18px;      /* 🔥 字變大（原本16） */
+  padding:18px;
+  font-size:18px;
   border-radius:14px;
   border:none;
   background:#e5e5ea;
@@ -42,7 +42,7 @@ h1{
 .tabBtn.active{
   background:#007AFF;
   color:white;
-  font-weight:600;     /* 🔥 選中更明顯 */
+  font-weight:600;
 }
 
 .card{
@@ -58,15 +58,14 @@ h1{
   color:#666;
 }
 
-input, select, textarea{
+input, select{
   width:100%;
   padding:14px;
   margin-top:8px;
   border-radius:12px;
   border:1px solid #ddd;
   font-size:16px;
-
-  box-sizing:border-box; /* 🔥 關鍵！讓寬度一致 */
+  box-sizing:border-box;
 }
 
 .mainBtn{
@@ -89,17 +88,17 @@ input, select, textarea{
 <h1>📦 進出貨系統</h1>
 
 <div class="tabGroup">
-  <button class="tabBtn active" onclick="switchTab('in')">收貨</button>
-  <button class="tabBtn" onclick="switchTab('out')">寄貨</button>
+  <button class="tabBtn active" onclick="switchTab('in', this)">收貨</button>
+  <button class="tabBtn" onclick="switchTab('out', this)">寄貨</button>
 </div>
 
 <div class="card">
 
-<!-- ================= 收貨 ================= -->
+<!-- 收貨 -->
 <div id="inBox">
 
 <div class="label">寄件品牌</div>
-<select id="brand" onchange="checkBrand()">
+<select id="brand" onchange="checkBrand('in')">
   <option value="">請選擇</option>
   <option>TR Dior</option>
   <option>TW Dior</option>
@@ -139,14 +138,11 @@ input, select, textarea{
   <option>DHL</option>
 </select>
 
-<div class="label">上傳照片（含關稅）</div>
-<input type="file" id="photo">
-
 <button class="mainBtn" onclick="submitIn()">完成收貨</button>
 
 </div>
 
-<!-- ================= 寄貨 ================= -->
+<!-- 寄貨 -->
 <div id="outBox" style="display:none">
 
 <div class="label">寄件人</div>
@@ -162,7 +158,7 @@ input, select, textarea{
 </select>
 
 <div class="label">收件品牌</div>
-<select id="outBrand" onchange="checkBrand()">
+<select id="outBrand" onchange="checkBrand('out')">
   <option value="">請選擇</option>
   <option>TR Dior</option>
   <option>TW Dior</option>
@@ -173,6 +169,8 @@ input, select, textarea{
   <option>BB</option>
   <option value="other">Other</option>
 </select>
+
+<input type="text" id="outBrandOther" placeholder="請輸入品牌" style="display:none">
 
 <div class="label">件數</div>
 <input type="number" id="outQty">
@@ -186,9 +184,6 @@ input, select, textarea{
   <option>順豐</option>
 </select>
 
-<div class="label">上傳收貨單</div>
-<input type="file" id="receipt">
-
 <button class="mainBtn" onclick="submitOut()">完成寄貨</button>
 
 </div>
@@ -198,34 +193,94 @@ input, select, textarea{
 
 <script>
 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx-n5_Cbbhz8pdtAA994hRKf8yEDPlD1dd5jIsnYaCxvbPdyByWiO1eBF1G77l7M1DIgw/exec"
+
 // 切換
-function switchTab(type){
+function switchTab(type, el){
   document.getElementById("inBox").style.display = type==="in"?"block":"none"
   document.getElementById("outBox").style.display = type==="out"?"block":"none"
 
-  let btns = document.querySelectorAll(".tabBtn")
-  btns.forEach(btn=>btn.classList.remove("active"))
-  event.target.classList.add("active")
+  document.querySelectorAll(".tabBtn").forEach(btn=>btn.classList.remove("active"))
+  el.classList.add("active")
 }
 
-// 品牌 Other
-function checkBrand(){
-  const val = document.getElementById("brand").value
-  document.getElementById("brandOther").style.display = val==="other"?"block":"none"
+// Other品牌
+function checkBrand(type){
+  if(type==="in"){
+    const val = document.getElementById("brand").value
+    document.getElementById("brandOther").style.display = val==="other"?"block":"none"
+  }else{
+    const val = document.getElementById("outBrand").value
+    document.getElementById("outBrandOther").style.display = val==="other"?"block":"none"
+  }
 }
 
-// 收貨送出
+// 收貨
 function submitIn(){
-  alert("收貨送出（之後接 Apps Script）")
+
+  let brand = document.getElementById("brand").value
+  if(brand==="other"){
+    brand = document.getElementById("brandOther").value
+  }
+
+  const data = {
+    type:"in",
+    brand,
+    receiver:document.getElementById("receiver").value,
+    qty:document.getElementById("qty").value,
+    delivery:document.getElementById("delivery").value
+  }
+
+  if(!data.receiver || !data.qty){
+    alert("請填寫完整資料")
+    return
+  }
+
+  sendData(data)
 }
 
-// 寄貨送出
+// 寄貨
 function submitOut(){
-  alert("寄貨送出（之後接 Apps Script）")
+
+  let brand = document.getElementById("outBrand").value
+  if(brand==="other"){
+    brand = document.getElementById("outBrandOther").value
+  }
+
+  const data = {
+    type:"out",
+    sender:document.getElementById("sender").value,
+    brand,
+    qty:document.getElementById("outQty").value,
+    delivery:document.getElementById("outDelivery").value
+  }
+
+  if(!data.sender || !data.qty){
+    alert("請填寫完整資料")
+    return
+  }
+
+  sendData(data)
+}
+
+// 傳送
+function sendData(data){
+
+  fetch(GAS_URL,{
+    method:"POST",
+    body:JSON.stringify(data)
+  })
+  .then(res=>res.text())
+  .then(()=>{
+    alert("✅ 完成")
+    location.reload()
+  })
+  .catch(()=>{
+    alert("❌ 失敗")
+  })
 }
 
 </script>
 
 </body>
 </html>
-
