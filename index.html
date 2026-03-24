@@ -201,7 +201,7 @@ input, select{
 
 <script>
 
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwljQ973aINMNWR5qDaYrCV_ss0aQ5byHH8qB8rTJArog430Gs3ejLwslaVdXRW5x-YEg/exec"
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxb6t98Re7qfmt-G82utjiQqJhgpqFwBsj7GxBn5IRLFyxgPcMFkEQ9k7SJuQBXOm-PlA/exec"
 
 // 切換
 function switchTab(type, el){
@@ -239,7 +239,7 @@ function submitIn(){
     delivery:document.getElementById("delivery").value
   }
 
-  if(!data.receiver || !data.qty){
+  if(!data.brand || !data.receiver || !data.qty || !data.delivery){
     alert("請填寫完整資料")
     return
   }
@@ -263,7 +263,7 @@ function submitOut(){
     delivery:document.getElementById("outDelivery").value
   }
 
-  if(!data.sender || !data.qty){
+  if(!data.sender || !data.brand || !data.qty || !data.delivery){
     alert("請填寫完整資料")
     return
   }
@@ -274,37 +274,66 @@ function submitOut(){
 // 傳送
 async function sendData(data, fileInput){
 
-  if(fileInput && fileInput.files[0]){
-    const file = fileInput.files[0]
+  try{
 
-    const base64 = await toBase64(file)
+    // 🔥 檔案檢查
+    if(fileInput && fileInput.files[0]){
+      const file = fileInput.files[0]
 
-    data.file = base64
-    data.fileType = file.type
-  }
-  
+      if(file.size > 5 * 1024 * 1024){
+        alert("檔案不能超過5MB")
+        return
+      }
 
-  fetch(GAS_URL,{
-    method:"POST",
-    mode:"no-cors",   // 🔥 關鍵
-    body:JSON.stringify(data)
-  })
-  .then(()=>{
+      const base64 = await toBase64(file)
+
+      data.file = base64
+      data.fileType = file.type
+    }
+
+    const res = await fetch(GAS_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(data)
+    })
+
+    const text = await res.text()
+
     alert("✅ 已送出")
-  })
-  .catch(()=>{
-    alert("❌ 失敗")
-  })
-  
+
+    // 🔥 清空表單
+    resetForm()
+
+  }catch(err){
+    console.error(err)
+    alert("❌ 送出失敗")
+  }
 }
 
+// 清空
+function resetForm(){
+  document.querySelectorAll("input").forEach(i=>{
+    if(i.type !== "file") i.value=""
+    else i.value = null
+  })
+
+  document.querySelectorAll("select").forEach(s=>s.value="")
+
+  document.getElementById("photoName").innerText=""
+  document.getElementById("receiptName").innerText=""
+}
+
+// 顯示檔名
 function showFileName(input, targetId){
   const file = input.files[0] 
-    if(file){ 
+  if(file){ 
     document.getElementById(targetId).innerText = "已選：" + file.name 
   } 
 }
 
+// 轉 base64
 function toBase64(file){
   return new Promise((resolve, reject)=>{
     const reader = new FileReader()
