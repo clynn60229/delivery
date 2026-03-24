@@ -353,9 +353,17 @@ function showFileName(input, targetId){
 function toBase64(file){
   return new Promise((resolve, reject)=>{
     const reader = new FileReader()
+
+    reader.onload = () => {
+      resolve(reader.result)
+    }
+
+    reader.onerror = (error) => {
+      console.error("讀檔失敗:", error)
+      reject("讀檔失敗")
+    }
+
     reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = error => reject(error)
   })
 }
 
