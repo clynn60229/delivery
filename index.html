@@ -274,7 +274,16 @@ function submitOut(){
 }
 
 // 傳送
-function sendData(data){
+async function sendData(data, fileInput){
+
+  if(fileInput && fileInput.files[0]){
+    const file = fileInput.files[0]
+
+    const base64 = await toBase64(file)
+
+    data.file = base64
+    data.fileType = file.type
+  }
 
   fetch(GAS_URL,{
     method:"POST",
@@ -285,17 +294,23 @@ function sendData(data){
     alert("✅ 完成")
     location.reload()
   })
-  .catch(()=>{
-    alert("❌ 失敗")
-  })
 }
-  
+
 function showFileName(input, targetId){
   const file = input.files[0] if(file){ 
     document.getElementById(targetId).innerText = "已選：" + file.name 
   } 
 }
-  
+
+function toBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
+  })
+}
+
 </script>
 
 </body>
