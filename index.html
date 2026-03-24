@@ -276,40 +276,20 @@ async function sendData(data, fileInput){
 
   try{
 
-    // 🔥 檔案檢查
-    if(fileInput && fileInput.files[0]){
-      const file = fileInput.files[0]
+  const res = await fetch(GAS_URL,{
+    method:"POST",
+    body:JSON.stringify(data)
+  })
 
-      if(file.size > 5 * 1024 * 1024){
-        alert("檔案不能超過5MB")
-        return
-      }
+  const text = await res.text()
+  console.log("回應：", text)
 
-      const base64 = await toBase64(file)
-
-      data.file = base64
-      data.fileType = file.type
-    }
-
-    const res = await fetch(GAS_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(data)
-    })
-
-    const text = await res.text()
-
-    alert("✅ 已送出")
-
-    // 🔥 清空表單
-    resetForm()
+  alert("✅ 已送出")
 
   }catch(err){
-    console.error(err)
+    console.error("錯誤：", err)
     alert("❌ 送出失敗")
-  }
+  }  
 }
 
 // 清空
