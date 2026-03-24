@@ -276,6 +276,9 @@ async function sendData(data, fileInput){
 
   try{
 
+if(fileInput && fileInput.files.length === 0){
+  console.log("⚠️ 沒選檔案")
+}
     // =====================
     // 📸 optional附件
     // =====================
