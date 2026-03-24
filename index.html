@@ -302,10 +302,14 @@ async function sendData(data, fileInput){
     // =====================
     // 🚀 傳送
     // =====================
-    const res = await fetch(GAS_URL,{
+   const res = await fetch(GAS_URL,{
       method:"POST",
+      mode:"no-cors",   // 🔥 關鍵
       body:JSON.stringify(data)
     })
+
+    alert("✅ 已送出")
+    resetForm()
 
     const text = await res.text()
     console.log("GAS回應:", text)
