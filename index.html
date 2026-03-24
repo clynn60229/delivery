@@ -290,22 +290,21 @@ async function sendData(data, fileInput){
     if(fileInput && fileInput.files.length > 0){
 
       const file = fileInput.files[0]
+    
+      console.log("開始轉 base64")
 
-      // 檔案限制
-      if(file.size > 5 * 1024 * 1024){
-        alert("檔案不能超過5MB")
-        return
-      }
-
-       try{
+      try{
         const base64 = await toBase64(file)
+        console.log("base64成功")
+    
         data.file = base64
         data.fileType = file.type
+    
       }catch(e){
-        alert("檔案讀取失敗")
+        console.error("base64失敗:", e)
+        alert("圖片讀取失敗")
         return
       }
-
     }
 
     console.log("送出資料:", data)
@@ -350,13 +349,13 @@ function toBase64(file){
   return new Promise((resolve, reject)=>{
     const reader = new FileReader()
 
-    reader.onload = () => {
+    reader.onload = function(){
       resolve(reader.result)
     }
 
-    reader.onerror = (error) => {
-      console.error("讀檔失敗:", error)
-      reject("讀檔失敗")
+    reader.onerror = function(e){
+      console.error("讀取失敗:", e)
+      reject(e)
     }
 
     reader.readAsDataURL(file)
