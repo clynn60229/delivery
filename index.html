@@ -295,7 +295,8 @@ async function sendData(data, fileInput){
 }
 
 function showFileName(input, targetId){
-  const file = input.files[0] if(file){ 
+  const file = input.files[0] 
+    if(file){ 
     document.getElementById(targetId).innerText = "已選：" + file.name 
   } 
 }
