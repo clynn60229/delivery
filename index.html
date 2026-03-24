@@ -274,11 +274,16 @@ function submitOut(){
 // 🔥 傳送（完整版）
 async function sendData(data, fileInput){
 
-  try{
+    try{
 
-if(fileInput && fileInput.files.length === 0){
-  console.log("⚠️ 沒選檔案")
-}
+    // 🔥 放這裡（就是這）
+    console.log("fileInput:", fileInput)
+    console.log("files:", fileInput?.files)
+
+    if(fileInput && fileInput.files.length === 0){
+      console.log("⚠️ 沒選檔案")
+    }
+      
     // =====================
     // 📸 optional附件
     // =====================
