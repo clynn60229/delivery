@@ -282,19 +282,22 @@ async function sendData(data, fileInput){
     data.file = base64
     data.fileType = file.type
   }
-
+  
   fetch(GAS_URL,{
     method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
     body:JSON.stringify(data)
   })
   .then(res=>res.text())
-  .then(()=>{
+  .then(res=>{
+    console.log(res)
     alert("✅ 完成")
     location.reload()
   })
+  .catch(err=>{
+    console.error(err)
+    alert("❌ 送出失敗")
+  })
+  
 }
 
 function showFileName(input, targetId){
