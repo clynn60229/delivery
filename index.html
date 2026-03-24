@@ -244,7 +244,8 @@ function submitIn(){
     return
   }
 
-  sendData(data, document.getElementById("photo"))
+  await sendData(data, document.getElementById("photo"));
+  resetFormIn(); 
 }
 
 // 寄貨
@@ -268,7 +269,8 @@ function submitOut(){
     return
   }
 
-  sendData(data, document.getElementById("receipt"))
+  await sendData(data, document.getElementById("receipt"));
+  resetFormIn(); 
 }
 
 // 🔥 傳送（完整版）
