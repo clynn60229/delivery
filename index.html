@@ -223,9 +223,7 @@ function checkBrand(type){
   }
 }
 
-// 收貨
-function submitIn(){
-
+async function submitIn(){
   let brand = document.getElementById("brand").value
   if(brand==="other"){
     brand = document.getElementById("brandOther").value
@@ -245,12 +243,10 @@ function submitIn(){
   }
 
   await sendData(data, document.getElementById("photo"));
-  resetFormIn(); 
+  resetForm(); 
 }
 
-// 寄貨
-function submitOut(){
-
+async function submitOut(){
   let brand = document.getElementById("outBrand").value
   if(brand==="other"){
     brand = document.getElementById("outBrandOther").value
@@ -270,7 +266,7 @@ function submitOut(){
   }
 
   await sendData(data, document.getElementById("receipt"));
-  resetFormIn(); 
+  resetForm(); 
 }
 
 // 🔥 傳送（完整版）
