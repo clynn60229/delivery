@@ -292,7 +292,7 @@ async function sendData(data, fileInput){
     // 🌐 關鍵：用 URLSearchParams
     // =========================
     const formData = new URLSearchParams()
-    formData.append("data", JSON.stringify(data))
+    formData.append("data", encodeURIComponent(JSON.stringify(data)))
 
     const res = await fetch(GAS_URL,{
       method:"POST",
