@@ -315,7 +315,7 @@ async function sendData(data, fileInput, btn){
     const result = JSON.parse(text)
 
     if(result.status === "success"){
-      alert("✅ 成功寫入")
+      alert("✅ 送出成功")
       resetForm()
     }else{
       throw new Error(result.message || "未知錯誤")
