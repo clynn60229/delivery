@@ -200,7 +200,8 @@ input, select{
 </div>
 
 <script>
-
+let isSubmitting = false;
+  
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxb6t98Re7qfmt-G82utjiQqJhgpqFwBsj7GxBn5IRLFyxgPcMFkEQ9k7SJuQBXOm-PlA/exec"
 
 // 切換
@@ -272,13 +273,27 @@ async function submitOut(){
 // 🔥 傳送（完整版）
 async function sendData(data, fileInput){
 
+  // 🚫 已在送出 → 直接擋掉
+  if(isSubmitting){
+    alert("⏳ 資料送出中，請勿重複點擊")
+    return
+  }
+
+  isSubmitting = true   // 🔒 上鎖
+
+  const btn = document.querySelector(".mainBtn")
+  const originalText = btn.innerText
+
   try{
+
+    // 🔄 按鈕狀態
+    btn.innerText = "送出中..."
+    btn.disabled = true
 
     // =========================
     // 📸 檔案轉 base64
     // =========================
     if(fileInput && fileInput.files.length > 0){
-
       const file = fileInput.files[0]
       const base64 = await toBase64(file)
 
@@ -286,10 +301,8 @@ async function sendData(data, fileInput){
       data.fileType = file.type
     }
 
-    console.log("🚀 準備送出:", data)
-
     // =========================
-    // 🌐 關鍵：用 URLSearchParams
+    // 🌐 傳送
     // =========================
     const formData = new URLSearchParams()
     formData.append("data", encodeURIComponent(JSON.stringify(data)))
@@ -300,19 +313,28 @@ async function sendData(data, fileInput){
     })
 
     const text = await res.text()
-    console.log("📩 GAS回傳:", text)
-
-    let result = JSON.parse(text)
+    const result = JSON.parse(text)
 
     if(result.status === "success"){
       alert("✅ 成功寫入")
+      resetForm()
     }else{
       throw new Error(result.message || "未知錯誤")
     }
 
   }catch(err){
-    console.error("❌ 錯誤:", err)
+
+    console.error(err)
     alert("❌ 送出失敗：" + err.message)
+
+  }finally{
+
+    // 🔓 解鎖（不管成功失敗都會跑）
+    isSubmitting = false
+
+    // 🔄 按鈕恢復
+    btn.innerText = originalText
+    btn.disabled = false
   }
 }
 
