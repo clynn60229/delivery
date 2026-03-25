@@ -275,17 +275,12 @@ async function sendData(data, fileInput){
   try{
 
     // =========================
-    // 📸 檔案轉 base64（如果有）
+    // 📸 檔案轉 base64
     // =========================
     if(fileInput && fileInput.files.length > 0){
 
       const file = fileInput.files[0]
-
-      console.log("📸 開始轉 base64")
-
       const base64 = await toBase64(file)
-
-      console.log("✅ base64成功")
 
       data.file = base64
       data.fileType = file.type
@@ -294,30 +289,21 @@ async function sendData(data, fileInput){
     console.log("🚀 準備送出:", data)
 
     // =========================
-    // 🌐 發送到 GAS（重點）
+    // 🌐 關鍵：用 URLSearchParams
     // =========================
+    const formData = new URLSearchParams()
+    formData.append("data", JSON.stringify(data))
+
     const res = await fetch(GAS_URL,{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+      method:"POST",
+      body: formData
     })
 
-    // 👉 取得回應內容
     const text = await res.text()
     console.log("📩 GAS回傳:", text)
 
-    let result
-    try{
-      result = JSON.parse(text)
-    }catch(e){
-      throw new Error("GAS回傳格式錯誤：" + text)
-    }
+    let result = JSON.parse(text)
 
-    // =========================
-    // ✅ 成功判斷
-    // =========================
     if(result.status === "success"){
       alert("✅ 成功寫入")
     }else{
@@ -325,10 +311,8 @@ async function sendData(data, fileInput){
     }
 
   }catch(err){
-
     console.error("❌ 錯誤:", err)
     alert("❌ 送出失敗：" + err.message)
-
   }
 }
 
