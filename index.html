@@ -142,7 +142,7 @@ input, select{
 <input type="file" id="photo" onchange="showFileName(this, 'photoName')">
 <div id="photoName" style="font-size:13px;color:#666;margin-top:5px;"></div>
 
-<button class="mainBtn" onclick="submitIn()">完成收貨</button>
+<button class="mainBtn" onclick="submitIn(this)">完成收貨</button>
 
 </div>
 
@@ -192,7 +192,7 @@ input, select{
 <input type="file" id="receipt" onchange="showFileName(this, 'receiptName')">
 <div id="receiptName" style="font-size:13px;color:#666;margin-top:5px;"></div>
 
-<button class="mainBtn" onclick="submitOut()">完成寄貨</button>
+<button class="mainBtn" onclick="submitOut(this)">完成寄貨</button>
 
 </div>
 
@@ -224,7 +224,7 @@ function checkBrand(type){
   }
 }
 
-async function submitIn(){
+async function submitIn(btn){
   let brand = document.getElementById("brand").value
   if(brand==="other"){
     brand = document.getElementById("brandOther").value
@@ -243,11 +243,11 @@ async function submitIn(){
     return
   }
 
-  await sendData(data, document.getElementById("photo"));
+  await sendData(data, document.getElementById("photo"), btn);
   resetForm(); 
 }
 
-async function submitOut(){
+async function submitOut(btn){
   let brand = document.getElementById("outBrand").value
   if(brand==="other"){
     brand = document.getElementById("outBrandOther").value
@@ -266,12 +266,12 @@ async function submitOut(){
     return
   }
 
-  await sendData(data, document.getElementById("receipt"));
+  await sendData(data, document.getElementById("receipt"), btn);
   resetForm(); 
 }
 
 // 🔥 傳送（完整版）
-async function sendData(data, fileInput){
+async function sendData(data, fileInput, btn){
 
   // 🚫 已在送出 → 直接擋掉
   if(isSubmitting){
@@ -281,7 +281,6 @@ async function sendData(data, fileInput){
 
   isSubmitting = true   // 🔒 上鎖
 
-  const btn = document.querySelector(".mainBtn")
   const originalText = btn.innerText
 
   try{
