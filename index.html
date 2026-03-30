@@ -43,6 +43,13 @@ input, select{
    box-sizing:border-box; 
 }
   
+input[type="date"]{
+  width:100%;
+  max-width:100%;
+  min-width:0;            /* 🔥 關鍵 */
+  -webkit-appearance: none;
+}
+  
 .tabGroup{
   display:flex;
   gap:10px;
