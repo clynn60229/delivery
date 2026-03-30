@@ -12,26 +12,61 @@ body{
   font-family:-apple-system, BlinkMacSystemFont, sans-serif;
   background:#f2f2f7;
 }
+  
 .container{
   max-width:500px;
   margin:auto;
   padding:30px 20px 60px;
 }
-h1{font-size:22px;margin-bottom:20px;}
+  
+h1{
+  font-size:22px;
+  margin-bottom:
+  20px;}
+  
 .card{
   background:white;
   border-radius:20px;
   padding:20px;
 }
-.label{margin-top:15px;font-size:14px;color:#666;}
-input, select{
-  width:100%;padding:14px;margin-top:8px;
-  border-radius:12px;border:1px solid #ddd;
+.label
+  margin-top:15px;
+  font-size:14px;
+  color:#666;}
+  
+input, select
+  {width:100%; 
+   padding:14px; 
+   margin-top:8px; 
+   border-radius:12px; 
+   border:1px solid #ddd; 
+   font-size:16px; 
+   box-sizing:border-box; }
+  
+.tabGroup{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tabBtn{
+  flex:1;
+  padding:18px;
+  font-size:18px;
+  border-radius:14px;
+  border:none;
+  background:#e5e5ea;
+}
+
+.tabBtn.active{
+  background:#007AFF;
+  color:white;
+  font-weight:600;
 }
 .mainBtn{
   width:100%;padding:16px;margin-top:20px;
   border:none;border-radius:14px;
-  background:#007AFF;color:white;font-size:16px;
+  background:#007AFF;color:white;font-size:18px;
 }
 </style>
 </head>
