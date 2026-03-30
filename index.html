@@ -375,6 +375,31 @@ function toBase64(file){
     reader.readAsDataURL(file)
   })
 }
+  
+async function loadData(){
+
+  const type = document.getElementById("type").value
+
+  const res = await fetch(GAS_URL + "?type=" + type)
+  const data = await res.json()
+
+  let html = ""
+
+  data.slice(1).reverse().forEach(row=>{
+    html += `
+      <div class="card">
+        <div>${row[0]}</div>
+        <div>${row[1]}</div>
+        <div>${row[2]}</div>
+        <div>${row[3]} 件</div>
+        <div>${row[4]}</div>
+        ${row[5] ? `<a href="${row[5]}" target="_blank">查看附件</a>` : ""}
+      </div>
+    `
+  })
+
+  document.getElementById("list").innerHTML = html
+}
 
 </script>
 
