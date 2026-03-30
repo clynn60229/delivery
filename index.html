@@ -12,71 +12,26 @@ body{
   font-family:-apple-system, BlinkMacSystemFont, sans-serif;
   background:#f2f2f7;
 }
-
 .container{
   max-width:500px;
   margin:auto;
   padding:30px 20px 60px;
 }
-
-h1{
-  font-size:22px;
-  margin-bottom:20px;
-}
-
-.tabGroup{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-}
-
-.tabBtn{
-  flex:1;
-  padding:18px;
-  font-size:18px;
-  border-radius:14px;
-  border:none;
-  background:#e5e5ea;
-}
-
-.tabBtn.active{
-  background:#007AFF;
-  color:white;
-  font-weight:600;
-}
-
+h1{font-size:22px;margin-bottom:20px;}
 .card{
   background:white;
   border-radius:20px;
   padding:20px;
-  box-sizing:border-box;
 }
-
-.label{
-  margin-top:15px;
-  font-size:14px;
-  color:#666;
-}
-
+.label{margin-top:15px;font-size:14px;color:#666;}
 input, select{
-  width:100%;
-  padding:14px;
-  margin-top:8px;
-  border-radius:12px;
-  border:1px solid #ddd;
-  font-size:16px;
-  box-sizing:border-box;
+  width:100%;padding:14px;margin-top:8px;
+  border-radius:12px;border:1px solid #ddd;
 }
-
 .mainBtn{
-  width:100%;
-  padding:16px;
-  margin-top:25px;
-  font-size:18px;
-  border:none;
-  border-radius:14px;
-  background:#007AFF;
-  color:white;
+  width:100%;padding:16px;margin-top:20px;
+  border:none;border-radius:14px;
+  background:#007AFF;color:white;font-size:16px;
 }
 </style>
 </head>
@@ -199,24 +154,69 @@ input, select{
 </div>
 </div>
   
-<!-- 🔍 查詢區 -->
-<hr style="margin:30px 0">
+<!-- 🔍 查詢頁 -->
+<div id="searchPage" style="display:none">
+  <h1>🔍 查詢紀錄</h1>
 
-<h2>🔍 查詢紀錄</h2>
+  <div class="card">
 
-<div class="card">
+    <div class="label">類型</div>
+    <select id="type">
+      <option value="">全部</option>
+      <option value="in">收貨</option>
+      <option value="out">寄貨</option>
+    </select>
 
-<div class="label">查詢類型</div>
-<select id="type">
-  <option value="in">收貨</option>
-  <option value="out">寄貨</option>
-</select>
+    <div class="label">日期</div>
+    <input type="date" id="date">
 
-<button class="mainBtn" onclick="loadData()">查詢</button>
+    <div class="label">品牌</div>
+    <select id="searchBrand">
+        <option value="">請選擇</option>
+        <option>TR Dior</option>
+        <option>TW Dior</option>
+        <option>GL</option>
+        <option>CPB</option>
+        <option>LAP</option>
+        <option>TF</option>
+        <option>BB</option>
+        <option value="other">Other</option>
+      </select>
 
-<div id="list" style="margin-top:20px;"></div>
+    <div class="label">人員</div>
+    <select id="staff">
+      <option value="">請選擇</option>
+      <option>鄭芸</option>
+      <option>蔡品蓁</option>
+      <option>陳慧蘭</option>
+      <option>柯晨揚</option>
+      <option>邱文妍</option>
+      <option>蔡惠美</option>
+      <option>鄭苓</option>
+    </select>
+
+    
+
+    <div class="label">快遞</div>
+    <select id="searchDelivery">
+      <option value="">請選擇</option>
+      <option>黑貓宅急便</option>
+      <option>嘉里大榮</option>
+      <option>永勝</option>
+      <option>順豐</option>
+    </select>
+
+    <button class="mainBtn" onclick="loadData()">查詢</button>
+
+  </div>
+
+  <div id="list"></div>
+
+  <button class="mainBtn" onclick="showPage('homePage')" style="background:#999">← 返回</button>
+</div>
 
 </div>
+
 <script>
 let isSubmitting = false;
   
@@ -417,6 +417,55 @@ async function loadData(){
   })
 
   document.getElementById("list").innerHTML = html
+}
+  
+function showPage(id){
+  ["homePage","formPage","searchPage"].forEach(p=>{
+    document.getElementById(p).style.display="none"
+  })
+  document.getElementById(id).style.display="block"
+}
+
+// 查詢
+async function loadData(){
+
+  const type = document.getElementById("type").value
+  const date = document.getElementById("date").value
+  const brand = document.getElementById("searchBrand").value.toLowerCase()
+  const person = document.getElementById("searchPerson").value.toLowerCase()
+  const delivery = document.getElementById("searchDelivery").value.toLowerCase()
+
+  let url = GAS_URL + "?action=search"
+  if(type) url += "&type=" + type
+
+  const res = await fetch(url)
+  const data = await res.json()
+
+  let html = ""
+
+  data.slice(1).reverse().forEach(row=>{
+
+    const d = new Date(row[0])
+    const rowDate = d.toISOString().split("T")[0]
+
+    if(date && rowDate !== date) return
+    if(brand && !String(row[1]).toLowerCase().includes(brand)) return
+    if(person && !String(row[2]).toLowerCase().includes(person)) return
+    if(delivery && !String(row[4]).toLowerCase().includes(delivery)) return
+
+    html += `
+      <div class="card" style="margin-top:15px">
+        <div>📅 ${row[0]}</div>
+        <div>📦 ${row[1]}</div>
+        <div>👤 ${row[2]}</div>
+        <div>📊 ${row[3]} 件</div>
+        <div>🚚 ${row[4]}</div>
+        ${row[5] ? `<a href="${row[5]}" target="_blank">📎 附件</a>` : ""}
+      </div>
+    `
+  })
+
+  document.getElementById("list").innerHTML = html || "❌ 查無資料"
 }
 
 </script>
