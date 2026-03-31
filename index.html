@@ -535,20 +535,46 @@ async function loadData(){
     if(person && (!personVal || !personVal.toLowerCase().includes(person))) return
     if(delivery && (!row[4] || !row[4].toLowerCase().includes(delivery))) return
 
-    html += `
-      <div class="card" style="margin-top:15px">
-        <div>📅 ${row[0]}</div>
-        <div>📦 ${brandVal}</div>
-        <div>👤 ${personVal}</div>
-        <div>📊 ${row[3]} 件</div>
-        <div>🚚 ${row[4]}</div>
-        ${row[5] ? `<a href="${row[5]}" target="_blank">📎 附件</a>` : ""}
-      </div>
-    `
-  })
+    let html = `
+      <table style="width:100%; border-collapse:collapse; margin-top:15px;">
+        <tr style="background:#f2f2f7;">
+          <th>時間</th>
+          <th>品牌</th>
+          <th>人員</th>
+          <th>件數</th>
+          <th>快遞</th>
+          <th>附件</th>
+        </tr>
+      `
 
-  document.getElementById("list").innerHTML = html || "❌ 查無資料"
+      data.slice(1).reverse().forEach(row=>{
+      
+        const date = new Date(row[0])
+        const y = date.getFullYear()
+        const m = String(date.getMonth()+1).padStart(2,'0')
+        const d = String(date.getDate()).padStart(2,'0')
+        const h = String(date.getHours()).padStart(2,'0')
+        const min = String(date.getMinutes()).padStart(2,'0')
+      
+        const timeStr = `${y}/${m}/${d} ${h}:${min}`
+      
+        html += `
+          <tr style="text-align:center; border-bottom:1px solid #eee;">
+            <td>${timeStr}</td>
+            <td>${row[1]}</td>
+            <td>${row[2]}</td>
+            <td>${row[3]}</td>
+            <td>${row[4]}</td>
+            <td>${row[5] ? `<a href="${row[5]}" target="_blank">查看</a>` : ""}</td>
+          </tr>
+        `
+      })
+
+      html += `</table>`
+
+      document.getElementById("list").innerHTML = html || "❌ 查無資料"
 }
+                                  
 showPage("homePage")
   
 </script>
