@@ -545,9 +545,9 @@ async function loadData(){
           <th>快遞</th>
           <th>附件</th>
         </tr>
-      `
+    `
 
-      data.slice(1).reverse().forEach(row=>{
+    data.slice(1).reverse().forEach(row=>{
       
         const date = new Date(row[0])
         const y = date.getFullYear()
@@ -573,8 +573,8 @@ async function loadData(){
       html += `</table>`
 
       document.getElementById("list").innerHTML = html || "❌ 查無資料"
+  }
 }
-                                  
 showPage("homePage")
   
 </script>
