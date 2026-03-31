@@ -494,87 +494,67 @@ async function loadData(){
   const res = await fetch(url)
   const data = await res.json()
 
-  let html = ""
+  let html = `
+    <table style="width:100%; border-collapse:collapse; margin-top:15px;">
+      <tr style="background:#f2f2f7;">
+        <th>時間</th>
+        <th>品牌</th>
+        <th>人員</th>
+        <th>件數</th>
+        <th>快遞</th>
+        <th>附件</th>
+      </tr>
+  `
 
-  
-  function formatDateLocal(date){
-    const y = date.getFullYear()
-    const m = String(date.getMonth()+1).padStart(2,'0')
-    const d = String(date.getDate()).padStart(2,'0')
-    return `${y}-${m}-${d}`
-  }
-  
-  function formatDateTimeTW(isoString){
-  const date = new Date(isoString)
-
-  const y = date.getFullYear()
-  const mo = String(date.getMonth()+1).padStart(2,'0')
-  const d = String(date.getDate()).padStart(2,'0')
-  const h = String(date.getHours()).padStart(2,'0')
-  const m = String(date.getMinutes()).padStart(2,'0')
-
-  return `${y}/${mo}/${d} ${h}:${m}`
-}
+  let hasData = false
 
   data.slice(1).reverse().forEach(row=>{
 
     const d = new Date(row[0])
-    const rowDate = formatDateLocal(d)
+
+    const y = d.getFullYear()
+    const m = String(d.getMonth()+1).padStart(2,'0')
+    const day = String(d.getDate()).padStart(2,'0')
+    const h = String(d.getHours()).padStart(2,'0')
+    const min = String(d.getMinutes()).padStart(2,'0')
+
+    const rowDate = `${y}-${m}-${day}`
+    const timeStr = `${y}/${m}/${day} ${h}:${min}`
 
     let brandVal = row[1]
     let personVal = row[2]
 
-    // 👉 修正寄貨欄位
+    // 👉 寄貨欄位對調
     if(type === "out"){
       brandVal = row[2]
       personVal = row[1]
     }
 
+    // 🔍 篩選
     if(date && rowDate !== date) return
     if(brand && (!brandVal || !brandVal.toLowerCase().includes(brand))) return
     if(person && (!personVal || !personVal.toLowerCase().includes(person))) return
     if(delivery && (!row[4] || !row[4].toLowerCase().includes(delivery))) return
 
-    let html = `
-      <table style="width:100%; border-collapse:collapse; margin-top:15px;">
-        <tr style="background:#f2f2f7;">
-          <th>時間</th>
-          <th>品牌</th>
-          <th>人員</th>
-          <th>件數</th>
-          <th>快遞</th>
-          <th>附件</th>
-        </tr>
+    hasData = true
+
+    html += `
+      <tr style="text-align:center; border-bottom:1px solid #eee;">
+        <td>${timeStr}</td>
+        <td>${brandVal}</td>
+        <td>${personVal}</td>
+        <td>${row[3]}</td>
+        <td>${row[4]}</td>
+        <td>${row[5] ? `<a href="${row[5]}" target="_blank">查看</a>` : ""}</td>
+      </tr>
     `
+  })
 
-    data.slice(1).reverse().forEach(row=>{
-      
-        const date = new Date(row[0])
-        const y = date.getFullYear()
-        const m = String(date.getMonth()+1).padStart(2,'0')
-        const d = String(date.getDate()).padStart(2,'0')
-        const h = String(date.getHours()).padStart(2,'0')
-        const min = String(date.getMinutes()).padStart(2,'0')
-      
-        const timeStr = `${y}/${m}/${d} ${h}:${min}`
-      
-        html += `
-          <tr style="text-align:center; border-bottom:1px solid #eee;">
-            <td>${timeStr}</td>
-            <td>${row[1]}</td>
-            <td>${row[2]}</td>
-            <td>${row[3]}</td>
-            <td>${row[4]}</td>
-            <td>${row[5] ? `<a href="${row[5]}" target="_blank">查看</a>` : ""}</td>
-          </tr>
-        `
-      })
+  html += `</table>`
 
-      html += `</table>`
-
-      document.getElementById("list").innerHTML = html || "❌ 查無資料"
-  }
+  document.getElementById("list").innerHTML = hasData ? html : "❌ 查無資料"
 }
+  
 showPage("homePage")
   
 </script>
