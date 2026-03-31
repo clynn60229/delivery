@@ -46,10 +46,20 @@ input, select{
   
 input[type="date"]{
   width:100%;
-  min-width:0;
   max-width:100%;
+  min-width:0;
   box-sizing:border-box;
-  display:block;
+
+  /* 🔥 關鍵 */
+  -webkit-appearance: none;
+  appearance: none;
+
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  font-size:16px;
+
+  overflow:hidden;
 }
   
 .tabGroup{
