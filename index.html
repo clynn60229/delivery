@@ -89,6 +89,46 @@ input[type="date"]{
   border:none;border-radius:14px;
   background:#007AFF;color:white;font-size:18px;
 }
+.tableWrap{
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  margin-top:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+.tableWrap table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+.tableWrap th{
+  background:#f7f7f7;
+  padding:12px;
+  font-weight:600;
+  color:#555;
+}
+
+.tableWrap td{
+  padding:12px;
+  text-align:center;
+  border-bottom:1px solid #eee;
+}
+
+.tableWrap tr:last-child td{
+  border-bottom:none;
+}
+
+/* 📱 手機優化 */
+.tableWrap td{
+  font-size:13px;
+}
+
+.tableWrap a{
+  color:#007AFF;
+  text-decoration:none;
+}
 </style>
 </head>
 
@@ -230,6 +270,14 @@ input[type="date"]{
   
 <!-- 🔍 查詢頁 -->
 <div id="searchPage" style="display:none">
+  
+<div style="display:flex; align-items:center; margin-bottom:10px;">
+  <button onclick="showPage('homePage')" 
+    style="border:none; background:none; font-size:18px; margin-right:10px;">
+    ←
+  </button>
+  <h1 style="margin:0;">🔍 查詢紀錄</h1>
+</div>
   <h1>🔍 查詢紀錄</h1>
 
   <div class="card">
@@ -495,8 +543,8 @@ async function loadData(){
   const data = await res.json()
 
   let html = `
-    <table style="width:100%; border-collapse:collapse; margin-top:15px;">
-      <tr style="background:#f2f2f7;">
+    <div class="tableWrap">
+    <table>
         <th>時間</th>
         <th>品牌</th>
         <th>人員</th>
@@ -550,7 +598,7 @@ async function loadData(){
     `
   })
 
-  html += `</table>`
+  html += `</table></div>`
 
   document.getElementById("list").innerHTML = hasData ? html : "❌ 查無資料"
 }
