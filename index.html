@@ -50,16 +50,18 @@ input[type="date"]{
   min-width:0;
   box-sizing:border-box;
 
-  /* 🔥 關鍵 */
   -webkit-appearance: none;
   appearance: none;
 
   padding:14px;
+  height:48px;          /* 🔥 補高度 */
+  line-height:20px;     /* 🔥 讓字不貼邊 */
+
   border-radius:12px;
   border:1px solid #ddd;
   font-size:16px;
 
-  overflow:hidden;
+  background:white;     /* iOS 有時候會透明 */
 }
   
 .tabGroup{
