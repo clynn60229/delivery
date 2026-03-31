@@ -497,21 +497,37 @@ async function loadData(){
 
   let html = ""
 
+  function formatDateLocal(date){
+    const y = date.getFullYear()
+    const m = String(date.getMonth()+1).padStart(2,'0')
+    const d = String(date.getDate()).padStart(2,'0')
+    return `${y}-${m}-${d}`
+  }
+
   data.slice(1).reverse().forEach(row=>{
 
     const d = new Date(row[0])
-    const rowDate = d.toISOString().split("T")[0]
+    const rowDate = formatDateLocal(d)
+
+    let brandVal = row[1]
+    let personVal = row[2]
+
+    // 👉 修正寄貨欄位
+    if(type === "out"){
+      brandVal = row[2]
+      personVal = row[1]
+    }
 
     if(date && rowDate !== date) return
-    if(brand && !String(row[1]).toLowerCase().includes(brand)) return
-    if(person && !String(row[2]).toLowerCase().includes(person)) return
-    if(delivery && !String(row[4]).toLowerCase().includes(delivery)) return
+    if(brand && (!brandVal || !brandVal.toLowerCase().includes(brand))) return
+    if(person && (!personVal || !personVal.toLowerCase().includes(person))) return
+    if(delivery && (!row[4] || !row[4].toLowerCase().includes(delivery))) return
 
     html += `
       <div class="card" style="margin-top:15px">
         <div>📅 ${row[0]}</div>
-        <div>📦 ${row[1]}</div>
-        <div>👤 ${row[2]}</div>
+        <div>📦 ${brandVal}</div>
+        <div>👤 ${personVal}</div>
         <div>📊 ${row[3]} 件</div>
         <div>🚚 ${row[4]}</div>
         ${row[5] ? `<a href="${row[5]}" target="_blank">📎 附件</a>` : ""}
@@ -521,7 +537,6 @@ async function loadData(){
 
   document.getElementById("list").innerHTML = html || "❌ 查無資料"
 }
-
 showPage("homePage")
   
 </script>
